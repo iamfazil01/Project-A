@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgot Password</title>
+<link rel="stylesheet" href="projectforgot.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2 class="title">Forgot Password</h2>
+
+  <!-- Phone field -->
+  <div class="input-field" id="phoneField">
+    <input type="tel" id="phone" class="input" placeholder=" " required>
+    <label for="phone" class="label">Mobile Number</label>
+  </div>
+
+  <!-- OTP field -->
+  <div class="otp-field" id="otpField">
+    <div class="otp-boxes" id="otpBoxes">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+    </div>
+    <div class="otp-meta">
+      <span class="otp-timer" id="otpTimer">Expires in <span class="seconds" id="countdown">30</span>s</span>
+      <button class="resend-btn" id="resendBtn">Resend OTP</button>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="step active" id="step1">
+      <div class="circle">1</div>
+      <span>Identify</span>
+    </div>
+    <div class="line" id="line1"></div>
+    <div class="step" id="step2">
+      <div class="circle">2</div>
+      <span>Verify OTP</span>
+    </div>
+    <div class="line" id="line2"></div>
+    <div class="step" id="step3">
+      <div class="circle">3</div>
+      <span>NEW<br>PASSWORD</span>    </div>
+  </div>
+
+  <div class="btn-area">
+    <button class="btn"          id="sendOtpBtn"><span>SEND OTP</span></button>
+    <button class="btn"          id="verifyBtn" ><span>VERIFY OTP</span></button>
+    <button class="btn back-btn" id="backBtn"   ><span>GO BACK</span></button>
+  </div>
+
+  <p class="login-text">
+    Remember it?
+    <a href="index.html">Back to Login</a>
+  </p>
+
+</div>
+
+<script>
+  // ── Elements ──────────────────────────────────────────
+  const otpInputs  = document.querySelectorAll(".otp-boxes input");
+  const otpBoxes   = document.getElementById("otpBoxes");
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  const verifyBtn  = document.getElementById("verifyBtn");
+  const backBtn    = document.getElementById("backBtn");
+  const phoneField = document.getElementById("phoneField");
+  const otpField   = document.getElementById("otpField");
+  const line1      = document.getElementById("line1");
+  const step2      = document.getElementById("step2");
+  const otpTimer   = document.getElementById("otpTimer");
+  const countdown  = document.getElementById("countdown");
+  const resendBtn  = document.getElementById("resendBtn");
+
+  // Simulated correct OTP (replace with real backend check)
+  const CORRECT_OTP = "123456";
+
+  let timerInterval = null;
+
+  // ── OTP auto-advance ──────────────────────────────────
+  otpInputs.forEach((input, index) => {
+    input.addEventListener("input", () => {
+      // Only allow digits
+      input.value = input.value.replace(/\D/g, "");
+      clearError();
+      if (input.value.length === 1 && index < otpInputs.length - 1)
+        otpInputs[index + 1].focus();
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0)
+        otpInputs[index - 1].focus();
+    });
+  });
+
+  // ── Timer ─────────────────────────────────────────────
+  function startTimer() {
+    clearInterval(timerInterval);
+    let secs = 30;
+    countdown.textContent = secs;
+    otpTimer.classList.remove("expired");
+    resendBtn.classList.remove("visible");
+
+    // Animate countdown digit smoothly
+    timerInterval = setInterval(() => {
+      secs--;
+      countdown.textContent = secs;
+
+      // Pulse the number on each tick
+      countdown.style.transform = "scale(1.3)";
+      countdown.style.transition = "transform 0.15s ease";
+      setTimeout(() => {
+        countdown.style.transform = "scale(1)";
+      }, 150);
+
+      if (secs <= 10) {
+        countdown.style.color = "#e53935";
+      }
+
+      if (secs <= 0) {
+        clearInterval(timerInterval);
+        otpTimer.innerHTML = "OTP expired";
+        otpTimer.classList.add("expired");
+        resendBtn.classList.add("visible");
+        // Disable verify while expired
+        verifyBtn.style.opacity = "0.45";
+        verifyBtn.style.pointerEvents = "none";
+      }
+    }, 1000);
+  }
+
+  // ── Error helpers ─────────────────────────────────────
+function showError(message) {
+  otpBoxes.classList.add("otp-error");
+
+  // Let animation complete first
+  setTimeout(() => {
+    otpBoxes.classList.remove("otp-error");
+    alert(message);
+  }, 450); // match your animation duration
+}
+
+function clearError() {
+  // nothing needed now
+}
+  // ── Resend OTP ────────────────────────────────────────
+  resendBtn.addEventListener("click", () => {
+    otpInputs.forEach(i => i.value = "");
+    otpInputs[0].focus();
+    clearError();
+    verifyBtn.style.opacity = "";
+    verifyBtn.style.pointerEvents = "";
+    startTimer();
+  });
+
+  // ── SEND OTP ──────────────────────────────────────────
+  sendOtpBtn.addEventListener("click", () => {
+  const phone = document.getElementById("phone").value.trim();
+  if (!phone) return;
+
+  line1.classList.add("active");
+
+  setTimeout(() => {
+    phoneField.style.visibility = "hidden";
+    otpField.classList.add("visible");
+
+    // ✅ STEP CONTROL
+    document.getElementById("step1").classList.add("completed");
+    document.getElementById("step1").classList.remove("active");
+
+    step2.classList.add("active");
+
+    sendOtpBtn.classList.add("btn-hidden");
+    verifyBtn.classList.add("btn-show");
+    backBtn.classList.add("btn-show");
+
+    otpInputs[0].focus();
+    startTimer();
+  }, 600);
+});
+
+  // ── VERIFY OTP ────────────────────────────────────────
+  verifyBtn.addEventListener("click", () => {
+    const entered = Array.from(otpInputs).map(i => i.value).join("");
+    if (entered.length < 6) 
+    {
+       showError("Please enter all 6 digits.");
+       return;
+    }
+    if (entered !== CORRECT_OTP)
+    {
+    showError("Incorrect OTP. Please try again.");
+     return;
+    }
+
+    // ✅ STEP COMPLETE FLOW
+    step2.classList.add("completed");
+    step2.classList.remove("active");
+
+    document.getElementById("step3").classList.add("active");
+
+    // ✅ Correct — navigate forward (replace with actual navigation)
+    clearInterval(timerInterval);
+    alert("OTP Verified! Proceed to reset password.");
+  });
+
+  // ── BACK ──────────────────────────────────────────────
+  backBtn.addEventListener("click", () => {
+  clearInterval(timerInterval);
+
+  otpField.classList.remove("visible");
+  phoneField.style.visibility = "";
+
+  line1.classList.remove("active");
+
+  // ✅ RESET STEPS
+  document.getElementById("step1").classList.remove("completed");
+  document.getElementById("step1").classList.add("active");
+
+  step2.classList.remove("active", "completed");
+  document.getElementById("step3").classList.remove("active");
+
+  sendOtpBtn.classList.remove("btn-hidden");
+  verifyBtn.classList.remove("btn-show");
+  backBtn.classList.remove("btn-show");
+
+  verifyBtn.style.opacity = "";
+  verifyBtn.style.pointerEvents = "";
+
+  otpInputs.forEach(i => i.value = "");
+  document.getElementById("phone").value = "";
+
+  countdown.textContent = "30";
+  countdown.style.color = "";
+  otpTimer.innerHTML = 'Expires in <span class="seconds" id="countdown">30</span>s';
+  resendBtn.classList.remove("visible");
+});
+
+</script>
+
+</body>
+</html>

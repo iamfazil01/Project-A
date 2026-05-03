@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In Page</title>
+<link rel="stylesheet" href="projectlogin.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2 class="title">Sign Into Your Account</h2>
+
+    <form id="loginForm" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+
+        <div class="input-field">
+            <input type="tel"
+                   class="input"
+                   id="username"
+                   name="username"
+                   placeholder=" "
+                   pattern="[0-9]{10}"
+                   inputmode="numeric"
+                   maxlength="10"
+                   minlength="10"
+                   required>
+            <label for="username" class="label">Mobile Number</label>
+        </div>
+
+        <div class="input-field">
+            <input type="password" class="input" id="password" name="password" placeholder=" " required>
+            <label for="password" class="label">Password</label>
+        </div>
+
+        <div class="extra-links">
+            <a href="projectforgot.html" id="forgotPassword" class="right-link">Forgot Password?</a>
+        </div>
+
+    </form>
+
+    <!-- Button outside form — same as create account -->
+    <button type="button" class="btn" onclick="document.getElementById('loginForm').requestSubmit()">
+        <span>SIGN IN</span>
+    </button>
+
+    <p class="login-text">
+        Don't have an account?
+        <a href="projectcreateaccount.html">Create an Account</a>
+    </p>
+
+</div>
+
+<script>
+const form = document.getElementById("loginForm");
+
+form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    console.log("Login Data:", data);
+});
+</script>
+
+</body>
+</html>

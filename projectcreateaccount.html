@@ -1,0 +1,275 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up Page</title>
+        <link rel="stylesheet" href="projectcreateaccount.css">
+    </head>
+
+    <body>
+
+    <div class="container">
+
+        <!-- Fixed Header -->
+        <h2 class="title">Sign Up</h2>
+
+        <!-- Scroll wrapper holds fades + scroll area together -->
+        <div class="scroll-wrapper">
+
+            <!-- Top fade -->
+            <div class="fade-top" id="fadeTop"></div>
+
+            <!-- Scroll Area -->
+            <div class="form-area" id="formArea">
+
+                <div class="input-field">
+                    <input type="text" name="firstName" class="input" placeholder=" " required>
+                    <label class="label">First Name</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="text" name="lastName" class="input" placeholder=" " required>
+                    <label class="label">Last Name</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="text" name="outletName" class="input" placeholder=" " required>
+                    <label class="label">Outlet Name</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="tel" name="phoneNumber" class="input" placeholder=" " required>
+                    <label class="label">Phone Number</label>
+                </div>
+
+                <div class="input-field">
+                    <input type="date" id="dobInput" name="dateOfbirth" class="input" placeholder=" ">
+                    <label class="label">Date of Birth</label>
+                </div>
+
+                <div class="input-field">
+        <label class="gender-title">Gender</label>
+
+        <div class="radio-group">
+            <label class="radio-option">
+                <input type="radio" name="gender" value="male">
+                <span class="custom-radio"></span>
+                Male
+            </label>
+
+            <label class="radio-option">
+                <input type="radio" name="gender" value="female">
+                <span class="custom-radio"></span>
+                Female
+            </label>
+
+            <label class="radio-option">
+                <input type="radio" name="gender" value="other">
+                <span class="custom-radio"></span>
+                Others
+            </label>
+        </div>
+    </div>
+
+                <div class="input-field">
+                    <input type="email" class="input" name="email" placeholder=" ">
+                    <label class="label">Email</label>
+                </div>
+            
+                <!-- Strong password generator checkbox -->
+                <div class="input-field" style="margin-top:15px; margin-bottom:5px;">
+                <label style="display:flex; align-items:center; gap:8x; font-size:14px; cursor:pointer; font-weight:600; color:#292594;">
+                <input type="checkbox" id="generatePasswordCheckbox" onchange="handlePasswordGenerator()">
+                Generate Password
+                </label>
+                </div>
+
+                <!-- Password field with eye toggle -->
+                <div class="input-field">
+                    <input type="password" class="input password-input" id="passwordInput" name="password" placeholder=" " autocomplete="new-password" required>
+                    <label class="label">Password</label>
+                    <button class="eye-toggle" type="button" onclick="togglePassword()" aria-label="Toggle password visibility">
+                        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.966 9.966 0 012.293-3.95M6.938 6.938A9.965 9.965 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.966 9.966 0 01-1.357 2.598M6.938 6.938L3 3m3.938 3.938l10.124 10.124M6.938 6.938a9.965 9.965 0 015.062-1.933"/>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Bottom fade -->
+            <div class="fade-bottom" id="fadeBottom"></div>
+
+        </div>
+
+        <!-- Button -->
+        <button class="btn"><span>SIGN UP</span></button>
+
+        <p class="login-text">
+        Already have an account? 
+        <a href="index.html">Login</a>
+    </p>
+
+    </div>
+
+    <script>
+        const formArea = document.getElementById('formArea');
+        const fadeTop  = document.getElementById('fadeTop');
+        const fadeBottom = document.getElementById('fadeBottom');
+
+        let scrollTimeout;
+
+    function updateFades() {
+        const scrollTop = formArea.scrollTop;
+        const scrollHeight = formArea.scrollHeight;
+        const clientHeight = formArea.clientHeight;
+
+        const isAtTop = scrollTop <= 5;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+        // Show fades only if scrolling
+        formArea.classList.add("scrolling");
+
+        fadeTop.style.opacity = isAtTop ? '0' : '1';
+        fadeBottom.style.opacity = isAtBottom ? '0' : '1';
+
+        // remove scrolling state after user stops
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            formArea.classList.remove("scrolling");
+
+            // hide both when idle
+            fadeTop.style.opacity = '0';
+            fadeBottom.style.opacity = '0';
+        }, 180); // smooth delay
+    }
+
+    formArea.addEventListener('scroll', updateFades);
+
+        function togglePassword() {
+            const input     = document.getElementById('passwordInput');
+            const eyeOpen   = document.getElementById('eyeOpen');
+            const eyeClosed = document.getElementById('eyeClosed');
+
+            if (input.type === 'password') 
+            {
+            input.type = 'text';
+            eyeOpen.style.display = 'block';    // ✅ showing password → show eye-open
+            eyeClosed.style.display = 'none';
+            } 
+
+            else
+
+            {
+            input.type = 'password';
+            eyeOpen.style.display = 'none';     // ✅ hiding password → show eye-off
+            eyeClosed.style.display = 'block';
+            }
+        }
+
+        function handlePasswordGenerator() {
+        const checkbox = document.getElementById('generatePasswordCheckbox');
+        const passwordInput = document.getElementById('passwordInput');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+
+        if (checkbox.checked) {
+            const password = generateStrongPassword(12);
+
+            passwordInput.value = password;
+
+            // ✅ prevent typing
+            passwordInput.readOnly = true;
+
+            // keep password hidden
+            passwordInput.type = 'password';
+            eyeOpen.style.display = 'none';
+            eyeClosed.style.display = 'block';
+        } else if (!checkbox.checked) 
+        {
+
+        passwordInput.readOnly = false;
+        passwordInput.value = "";
+
+        }
+    }
+
+    function shuffleString(str) {
+        const arr = str.split('');
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr.join('');
+    }
+
+    function generateStrongPassword(length) {
+        const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const lower = "abcdefghijklmnopqrstuvwxyz";
+        const numbers = "0123456789";
+        const symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+        const allChars = upper + lower + numbers + symbols;
+
+        let password = "";
+
+        // Ensure strong pattern (at least 1 of each)
+        password += upper[Math.floor(Math.random() * upper.length)];
+        password += lower[Math.floor(Math.random() * lower.length)];
+        password += numbers[Math.floor(Math.random() * numbers.length)];
+        password += symbols[Math.floor(Math.random() * symbols.length)];
+
+        for (let i = 4; i < length; i++) {
+            password += allChars[Math.floor(Math.random() * allChars.length)];
+        }
+
+        // Shuffle password
+        return shuffleString(password);
+        
+    }
+
+
+    const dateInput = document.getElementById('dobInput');
+
+    // run on load (important for refresh / autofill)
+    window.addEventListener('load', () => {
+        updateFades();
+
+        if (dateInput.value) {
+            dateInput.classList.add('has-value');
+        }
+    });
+
+    // run on change
+    dateInput.addEventListener('change', () => {
+        if (dateInput.value) {
+            dateInput.classList.add('has-value');
+        } else {
+            dateInput.classList.remove('has-value');
+        }
+    });
+
+    const radios = document.querySelectorAll('input[name="gender"]');
+
+    radios.forEach(radio => {
+        radio.addEventListener('click', function () {
+            if (this.wasChecked) {
+                this.checked = false;
+                this.wasChecked = false;
+            } else {
+                radios.forEach(r => r.wasChecked = false);
+                this.wasChecked = true;
+            }
+        });
+    });
+
+    </script>
+
+    </body>
+    </html>
